@@ -100,8 +100,9 @@ def cat_file(mode, sha1_prefix):
     """
     obj_type, data = read_object(sha1_prefix)
     if mode in ['commit', 'tree', 'blob']:
-        assert obj_type == mode, 'expected object type {}, got {}'.format(
-                mode, obj_type)
+        if obj_type != mode:
+            raise ValueError('expected object type {}, got {}'.format(
+                    mode, obj_type))
         sys.stdout.buffer.write(data)
     elif mode == '-s':
         print(len(data))
