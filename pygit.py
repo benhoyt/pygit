@@ -99,9 +99,9 @@ def read_object(sha1_prefix):
 def cat_file(mode, sha1_prefix):
     """Write the contents of (or info about) object with given SHA-1 prefix to
     stdout. If mode is 'commit', 'tree', or 'blob', print raw data bytes of
-    object. If mode is '-s', print the size of the object. If mode is '-t',
-    print the type of the object. If mode is '-p', print a prettified version
-    of the object.
+    object. If mode is 'size', print the size of the object. If mode is
+    'type', print the type of the object. If mode is 'pretty', print a
+    prettified version of the object.
     """
     obj_type, data = read_object(sha1_prefix)
     if mode in ['commit', 'tree', 'blob']:
@@ -109,11 +109,11 @@ def cat_file(mode, sha1_prefix):
             raise ValueError('expected object type {}, got {}'.format(
                     mode, obj_type))
         sys.stdout.buffer.write(data)
-    elif mode == '-s':
+    elif mode == 'size':
         print(len(data))
-    elif mode == '-t':
+    elif mode == 'type':
         print(obj_type)
-    elif mode == '-p':
+    elif mode == 'pretty':
         if obj_type in ['commit', 'blob']:
             sys.stdout.buffer.write(data)
         elif obj_type == 'tree':
@@ -507,10 +507,10 @@ if __name__ == '__main__':
 
     sub_parser = sub_parsers.add_parser('cat-file',
             help='display contents of object')
-    valid_modes = ['commit', 'tree', 'blob', '-s', '-t', '-p']
+    valid_modes = ['commit', 'tree', 'blob', 'size', 'type', 'pretty']
     sub_parser.add_argument('mode', choices=valid_modes,
-            help='object type (commit, tree, blob) or display mode (-s=size, '
-                 '-t=type, -p=pretty)')
+            help='object type (commit, tree, blob) or display mode (size, '
+                 'type, pretty)')
     sub_parser.add_argument('hash_prefix',
             help='SHA-1 hash (or hash prefix) of object to display')
 
